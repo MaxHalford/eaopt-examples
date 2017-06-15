@@ -27,9 +27,9 @@ func (X Vector) Mutate(rng *rand.Rand) {
 	gago.MutNormalFloat64(X, 0.8, rng)
 }
 
-// Crossover a Vector with another Vector by applying 2-point crossover.
+// Crossover a Vector with another Vector by applying uniform crossover.
 func (X Vector) Crossover(Y gago.Genome, rng *rand.Rand) (gago.Genome, gago.Genome) {
-	var o1, o2 = gago.CrossGNXFloat64(X, Y.(Vector), 2, rng) // Returns two float64 slices
+	var o1, o2 = gago.CrossUniformFloat64(X, Y.(Vector), rng) // Returns two float64 slices
 	return Vector(o1), Vector(o2)
 }
 
@@ -44,7 +44,7 @@ func main() {
 	ga.Initialize()
 
 	fmt.Printf("Best fitness at generation 0: %f\n", ga.Best.Fitness)
-	for i := 1; i < 10; i++ {
+	for i := 1; i < 2; i++ {
 		ga.Enhance()
 		fmt.Printf("Best fitness at generation %d: %f\n", i, ga.Best.Fitness)
 	}
