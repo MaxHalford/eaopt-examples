@@ -44,7 +44,7 @@ func main() {
 	ga.Initialize()
 
 	fmt.Printf("Best fitness at generation 0: %f\n", ga.Best.Fitness)
-	for i := 1; i < 2; i++ {
+	for i := 0; i < 30; i++ {
 		ga.Enhance()
 		fmt.Printf("Best fitness at generation %d: %f\n", i, ga.Best.Fitness)
 	}
