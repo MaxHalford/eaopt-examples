@@ -7,5 +7,3 @@ Running the code produces the following GIF, showing the progress of the best so
 <div align="center">
   <img src="progress.gif" alt="progress" />
 </div>
-
-![progress.gif](progress.gif)
