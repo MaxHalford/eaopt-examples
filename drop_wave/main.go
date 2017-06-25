@@ -33,6 +33,13 @@ func (X Vector) Crossover(Y gago.Genome, rng *rand.Rand) (gago.Genome, gago.Geno
 	return Vector(o1), Vector(o2)
 }
 
+// Clone a Vector.
+func (X Vector) Clone() gago.Genome {
+	var XX = make(Vector, len(X))
+	copy(XX, X)
+	return XX
+}
+
 // MakeVector returns a random vector by generating 2 values uniformally
 // distributed between -10 and 10.
 func MakeVector(rng *rand.Rand) gago.Genome {
@@ -41,6 +48,7 @@ func MakeVector(rng *rand.Rand) gago.Genome {
 
 func main() {
 	var ga = gago.Generational(MakeVector)
+	ga.NPops = 1
 	ga.Initialize()
 
 	fmt.Printf("Best fitness at generation 0: %f\n", ga.Best.Fitness)

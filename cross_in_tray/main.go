@@ -37,6 +37,13 @@ func (X Vector) Crossover(Y gago.Genome, rng *rand.Rand) (gago.Genome, gago.Geno
 	return Vector(o1), Vector(o2)
 }
 
+// Clone a Vector.
+func (X Vector) Clone() gago.Genome {
+	var XX = make(Vector, len(X))
+	copy(XX, X)
+	return XX
+}
+
 // MakeVector returns a random vector by generating 5 values uniformally
 // distributed between -10 and 10.
 func MakeVector(rng *rand.Rand) gago.Genome {
@@ -58,16 +65,21 @@ func l2Distance(x1, x2 gago.Individual) (dist float64) {
 func main() {
 	// Define a GA with 1 population and 4 species
 	var ga = gago.GA{
-		MakeGenome: MakeVector,
-		NPops:      1,
-		PopSize:    80,
+		GenomeFactory: MakeVector,
+		NPops:         1,
+		PopSize:       80,
 		Model: gago.ModGenerational{
 			Selector: gago.SelTournament{
-				NParticipants: 3,
+				NContestants: 3,
 			},
 			MutRate: 0.5,
 		},
-		Speciator: gago.SpecKMedoids{4, l2Distance, 100},
+		Speciator: gago.SpecKMedoids{
+			K:             4,
+			MinPerCluster: 4,
+			Metric:        l2Distance,
+			MaxIterations: 100,
+		},
 	}
 	ga.Initialize()
 
@@ -82,11 +94,12 @@ func main() {
 	f, _ = os.OpenFile(progressFileName, os.O_APPEND|os.O_WRONLY, 0666)
 	defer f.Close()
 
-	fmt.Printf("Best fitness at generation 0: %f\n", ga.Best.Fitness)
 	// Append the initial GA status to the progress file
 	var bytes, _ = json.Marshal(ga)
 	f.WriteString(string(bytes) + "\n")
+
 	// Enhance the GA
+	fmt.Printf("Best fitness at generation 0: %f\n", ga.Best.Fitness)
 	for i := 1; i < 100; i++ {
 		ga.Enhance()
 		fmt.Printf("Best fitness at generation %d: %f\n", i, ga.Best.Fitness)

@@ -10,7 +10,7 @@ import (
 )
 
 // N_QUEENS is the size of each genome.
-const N_QUEENS = 20
+const N_QUEENS = 15
 
 // Positions is a slice of ints.
 type Positions []int
@@ -34,7 +34,7 @@ func absInt(n int) int {
 	return n
 }
 
-// Evaluate a slice of positions by counting the number of diagonal collisions.
+// Evaluate a slice of Positions by counting the number of diagonal collisions.
 // Queens are on the same diagonal if there row distance is equal to their
 // column distance.
 func (P Positions) Evaluate() float64 {
@@ -49,16 +49,23 @@ func (P Positions) Evaluate() float64 {
 	return collisions
 }
 
-// Mutate a slice of positions by permuting it's values.
+// Mutate a slice of Positions by permuting it's values.
 func (P Positions) Mutate(rng *rand.Rand) {
 	gago.MutPermuteInt(P, 3, rng)
 }
 
-// Crossover a slice of positions with another by applying partially mapped
+// Crossover a slice of Positions with another by applying partially mapped
 // crossover.
 func (P Positions) Crossover(Y gago.Genome, rng *rand.Rand) (gago.Genome, gago.Genome) {
 	var o1, o2 = gago.CrossPMXInt(P, Y.(Positions), rng)
 	return Positions(o1), Positions(o2)
+}
+
+// Clone a slice of Positions.
+func (P Positions) Clone() gago.Genome {
+	var PP = make(Positions, len(P))
+	copy(PP, P)
+	return PP
 }
 
 // MakeBoard creates a random slices of positions by generating random number
@@ -80,5 +87,5 @@ func main() {
 	}
 
 	fmt.Println(ga.Best.Genome)
-	fmt.Printf("Solution obtained after %d generations in %s\n", ga.Generations, ga.Age)
+	fmt.Printf("Optimal solution obtained after %d generations in %s\n", ga.Generations, ga.Age)
 }

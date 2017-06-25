@@ -65,8 +65,8 @@ func (p Path) Replace(q gago.Slice) {
 	copy(p, q.(Path))
 }
 
-// Clone method from Slice
-func (p Path) Clone() gago.Slice {
+// Copy method from Slice
+func (p Path) Copy() gago.Slice {
 	var clone = make(Path, len(p))
 	copy(clone, p)
 	return clone
@@ -94,6 +94,13 @@ func (p Path) Mutate(rng *rand.Rand) {
 func (p Path) Crossover(q gago.Genome, rng *rand.Rand) (gago.Genome, gago.Genome) {
 	var o1, o2 = gago.CrossPMX(p, q.(Path), rng)
 	return o1.(Path), o2.(Path)
+}
+
+// Clone a Path.
+func (p Path) Clone() gago.Genome {
+	var clone = make(Path, len(p))
+	copy(clone, p)
+	return clone
 }
 
 // MakePath creates a slice of Points along a grid and then shuffles the slice.

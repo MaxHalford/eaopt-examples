@@ -15,7 +15,7 @@ const N = 20
 // Digits is a slice of ints.
 type Digits []int
 
-// Evaluate a slice of digits by summing the number of 1s.
+// Evaluate a slice of Digits by summing the number of 1s.
 func (X Digits) Evaluate() float64 {
 	var sum int
 	for _, d := range X {
@@ -24,18 +24,25 @@ func (X Digits) Evaluate() float64 {
 	return N - float64(sum) // We want to minimize the fitness, hence the reversing
 }
 
-// Mutate a slice of digits by permuting it's values.
+// Mutate a slice of Digits by permuting it's values.
 func (X Digits) Mutate(rng *rand.Rand) {
 	gago.MutPermuteInt(X, 3, rng)
 }
 
-// Crossover a slice of digits with another by applying 2-point crossover.
+// Crossover a slice of Digits with another by applying 2-point crossover.
 func (X Digits) Crossover(Y gago.Genome, rng *rand.Rand) (gago.Genome, gago.Genome) {
 	var o1, o2 = gago.CrossGNXInt(X, Y.(Digits), 2, rng)
 	return Digits(o1), Digits(o2)
 }
 
-// MakeDigits creates a random slice of digits by randomly picking 1s and 0s.
+// Clone a slice of Digits.
+func (X Digits) Clone() gago.Genome {
+	var XX = make(Digits, len(X))
+	copy(XX, X)
+	return XX
+}
+
+// MakeDigits creates a random slice of Digits by randomly picking 1s and 0s.
 func MakeDigits(rng *rand.Rand) gago.Genome {
 	var digits = make(Digits, N)
 	for i := range digits {
@@ -52,6 +59,6 @@ func main() {
 
 	for i := 1; i < 10; i++ {
 		ga.Enhance()
+		fmt.Printf("Best fitness -> %f\n", ga.Best.Fitness)
 	}
-	fmt.Printf("Best fitness -> %f\n", ga.Best.Fitness)
 }
