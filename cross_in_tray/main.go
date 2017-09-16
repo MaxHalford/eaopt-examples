@@ -65,9 +65,9 @@ func l2Distance(x1, x2 gago.Individual) (dist float64) {
 func main() {
 	// Define a GA with 1 population and 4 species
 	var ga = gago.GA{
-		GenomeFactory: MakeVector,
-		NPops:         1,
-		PopSize:       80,
+		NewGenome: MakeVector,
+		NPops:     1,
+		PopSize:   80,
 		Model: gago.ModGenerational{
 			Selector: gago.SelTournament{
 				NContestants: 3,
