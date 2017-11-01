@@ -67,7 +67,11 @@ def main():
     anim = animation.FuncAnimation(fig, animate, init_func=init,
                                frames=len(coordinates), interval=100, blit=True)
 
-    anim.save('progress.gif', writer='imagemagick', fps=10)
+    try:
+        print('Saving to GIF')
+        anim.save('progress.gif', writer='imagemagick', fps=10)
+    except:
+        print('Could not save progress to GIF')
 
     plt.show()
 
