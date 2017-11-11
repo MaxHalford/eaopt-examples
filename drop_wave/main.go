@@ -51,9 +51,9 @@ func main() {
 	ga.NPops = 1
 	ga.Initialize()
 
-	fmt.Printf("Best fitness at generation 0: %f\n", ga.Best.Fitness)
+	fmt.Printf("Best fitness at generation 0: %f\n", ga.HallOfFame[0].Fitness)
 	for i := 0; i < 30; i++ {
 		ga.Enhance()
-		fmt.Printf("Best fitness at generation %d: %f\n", i, ga.Best.Fitness)
+		fmt.Printf("Best fitness at generation %d: %f\n", i, ga.HallOfFame[0].Fitness)
 	}
 }

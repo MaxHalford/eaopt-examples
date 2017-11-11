@@ -99,10 +99,10 @@ func main() {
 	f.WriteString(string(bytes) + "\n")
 
 	// Enhance the GA
-	fmt.Printf("Best fitness at generation 0: %f\n", ga.Best.Fitness)
+	fmt.Printf("Best fitness at generation 0: %f\n", ga.HallOfFame[0].Fitness)
 	for i := 1; i < 100; i++ {
 		ga.Enhance()
-		fmt.Printf("Best fitness at generation %d: %f\n", i, ga.Best.Fitness)
+		fmt.Printf("Best fitness at generation %d: %f\n", i, ga.HallOfFame[0].Fitness)
 		// Append the current GA status to the progress file
 		var bytes, _ = json.Marshal(ga)
 		f.WriteString(string(bytes) + "\n")

@@ -59,6 +59,6 @@ func main() {
 
 	for i := 1; i < 10; i++ {
 		ga.Enhance()
-		fmt.Printf("Best fitness -> %f\n", ga.Best.Fitness)
+		fmt.Printf("Best fitness -> %f\n", ga.HallOfFame[0].Fitness)
 	}
 }

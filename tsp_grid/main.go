@@ -133,15 +133,15 @@ func main() {
 	for i := 0; i < GENERATIONS; i++ {
 		ga.Enhance()
 		// Store the drawing for the current best path
-		var img = drawPath(ga.Best.Genome.(Path), i, ga.Best.Fitness)
+		var img = drawPath(ga.HallOfFame[0].Genome.(Path), i, ga.HallOfFame[0].Fitness)
 		outGif.Image = append(outGif.Image, img)
 		outGif.Delay = append(outGif.Delay, 0)
 	}
 	// Print the best obtained solution vs. the optimal solution
 	var optimal = float64((GRIDSIZE + 1) * (GRIDSIZE - 1))
-	fmt.Printf("Obtained %f\n", ga.Best.Fitness)
+	fmt.Printf("Obtained %f\n", ga.HallOfFame[0].Fitness)
 	fmt.Printf("Optimal is %d\n", int(optimal))
-	fmt.Printf("Off by %f percent\n", 100*(ga.Best.Fitness-optimal)/optimal)
+	fmt.Printf("Off by %f percent\n", 100*(ga.HallOfFame[0].Fitness-optimal)/optimal)
 	// Save to out.gif
 	var outFile, _ = os.OpenFile("progress.gif", os.O_WRONLY|os.O_CREATE, 0600)
 	defer outFile.Close()

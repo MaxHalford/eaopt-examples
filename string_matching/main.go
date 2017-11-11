@@ -61,9 +61,9 @@ func main() {
 		ga.Enhance()
 		// Concatenate the elements from the best individual and display the result
 		var buffer bytes.Buffer
-		for _, letter := range ga.Best.Genome.(Strings) {
+		for _, letter := range ga.HallOfFame[0].Genome.(Strings) {
 			buffer.WriteString(letter)
 		}
-		fmt.Printf("Result -> %s (%.0f mismatches)\n", buffer.String(), ga.Best.Fitness)
+		fmt.Printf("Result -> %s (%.0f mismatches)\n", buffer.String(), ga.HallOfFame[0].Fitness)
 	}
 }

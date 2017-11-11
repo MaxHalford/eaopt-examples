@@ -82,10 +82,10 @@ func main() {
 	var ga = gago.Generational(MakeBoard)
 	ga.Initialize()
 
-	for ga.Best.Fitness > 0 {
+	for ga.HallOfFame[0].Fitness > 0 {
 		ga.Enhance()
 	}
 
-	fmt.Println(ga.Best.Genome)
+	fmt.Println(ga.HallOfFame[0].Genome)
 	fmt.Printf("Optimal solution obtained after %d generations in %s\n", ga.Generations, ga.Age)
 }
