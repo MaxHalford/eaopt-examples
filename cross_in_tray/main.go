@@ -32,9 +32,8 @@ func (X Vector) Mutate(rng *rand.Rand) {
 }
 
 // Crossover a Vector with another Vector by applying 2-point crossover.
-func (X Vector) Crossover(Y gago.Genome, rng *rand.Rand) (gago.Genome, gago.Genome) {
-	var o1, o2 = gago.CrossGNXFloat64(X, Y.(Vector), 2, rng) // Returns two float64 slices
-	return Vector(o1), Vector(o2)
+func (X Vector) Crossover(Y gago.Genome, rng *rand.Rand) {
+	gago.CrossGNXFloat64(X, Y.(Vector), 2, rng)
 }
 
 // Clone a Vector.

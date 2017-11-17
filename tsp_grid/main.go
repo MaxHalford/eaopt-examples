@@ -91,9 +91,8 @@ func (p Path) Mutate(rng *rand.Rand) {
 }
 
 // Crossover a Path with another Path by using Partially Mixed Crossover (PMX).
-func (p Path) Crossover(q gago.Genome, rng *rand.Rand) (gago.Genome, gago.Genome) {
-	var o1, o2 = gago.CrossPMX(p, q.(Path), rng)
-	return o1.(Path), o2.(Path)
+func (p Path) Crossover(q gago.Genome, rng *rand.Rand) {
+	gago.CrossPMX(p, q.(Path), rng)
 }
 
 // Clone a Path.

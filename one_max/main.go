@@ -30,9 +30,8 @@ func (X Digits) Mutate(rng *rand.Rand) {
 }
 
 // Crossover a slice of Digits with another by applying 2-point crossover.
-func (X Digits) Crossover(Y gago.Genome, rng *rand.Rand) (gago.Genome, gago.Genome) {
-	var o1, o2 = gago.CrossGNXInt(X, Y.(Digits), 2, rng)
-	return Digits(o1), Digits(o2)
+func (X Digits) Crossover(Y gago.Genome, rng *rand.Rand) {
+	gago.CrossGNXInt(X, Y.(Digits), 2, rng)
 }
 
 // Clone a slice of Digits.

@@ -33,9 +33,8 @@ func (X Vector) Mutate(rng *rand.Rand) {
 }
 
 // Crossover a Vector with another Vector by applying uniform crossover.
-func (X Vector) Crossover(Y gago.Genome, rng *rand.Rand) (gago.Genome, gago.Genome) {
-	var o1, o2 = gago.CrossUniformFloat64(X, Y.(Vector), rng) // Returns two float64 slices
-	return Vector(o1), Vector(o2)
+func (X Vector) Crossover(Y gago.Genome, rng *rand.Rand) {
+	gago.CrossUniformFloat64(X, Y.(Vector), rng)
 }
 
 // Clone a Vector.

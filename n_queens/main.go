@@ -56,9 +56,8 @@ func (P Positions) Mutate(rng *rand.Rand) {
 
 // Crossover a slice of Positions with another by applying partially mapped
 // crossover.
-func (P Positions) Crossover(Y gago.Genome, rng *rand.Rand) (gago.Genome, gago.Genome) {
-	var o1, o2 = gago.CrossPMXInt(P, Y.(Positions), rng)
-	return Positions(o1), Positions(o2)
+func (P Positions) Crossover(Y gago.Genome, rng *rand.Rand) {
+	gago.CrossPMXInt(P, Y.(Positions), rng)
 }
 
 // Clone a slice of Positions.
