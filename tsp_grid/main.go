@@ -130,7 +130,7 @@ func main() {
 	ga.Initialize()
 
 	for i := 0; i < GENERATIONS; i++ {
-		ga.Enhance()
+		ga.Evolve()
 		// Store the drawing for the current best path
 		var img = drawPath(ga.HallOfFame[0].Genome.(Path), i, ga.HallOfFame[0].Fitness)
 		outGif.Image = append(outGif.Image, img)

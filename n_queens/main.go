@@ -82,7 +82,7 @@ func main() {
 	ga.Initialize()
 
 	for ga.HallOfFame[0].Fitness > 0 {
-		ga.Enhance()
+		ga.Evolve()
 	}
 
 	fmt.Println(ga.HallOfFame[0].Genome)

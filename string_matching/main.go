@@ -57,7 +57,7 @@ func main() {
 	ga.Initialize()
 
 	for i := 1; i < 30; i++ {
-		ga.Enhance()
+		ga.Evolve()
 		// Concatenate the elements from the best individual and display the result
 		var buffer bytes.Buffer
 		for _, letter := range ga.HallOfFame[0].Genome.(Strings) {

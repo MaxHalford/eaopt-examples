@@ -57,7 +57,7 @@ func main() {
 	ga.Initialize()
 
 	for i := 1; i < 10; i++ {
-		ga.Enhance()
+		ga.Evolve()
 		fmt.Printf("Best fitness -> %f\n", ga.HallOfFame[0].Fitness)
 	}
 }
