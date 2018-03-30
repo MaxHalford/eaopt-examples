@@ -18,7 +18,7 @@ const progressFileName = "progress.json"
 type Vector []float64
 
 // Evaluate a Vector.
-func (X Vector) Evaluate() (y float64) {
+func (X Vector) Evaluate() (y float64, err error) {
 	y = math.Pow(X[0], 2) + math.Pow(X[1], 2)
 	if math.Abs(X[0])+math.Abs(X[1]) < 4 {
 		y += 10000

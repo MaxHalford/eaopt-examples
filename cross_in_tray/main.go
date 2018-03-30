@@ -19,10 +19,10 @@ type Vector []float64
 
 // Evaluate a Vector with the Cross-in-Tray function which takes two variables
 // as input and reaches a minimum of -2.06261 in X = (±1.3491, ±1.3491).
-func (X Vector) Evaluate() (y float64) {
+func (X Vector) Evaluate() (y float64, err error) {
 	return -0.0001 * m.Pow(m.Abs(
 		m.Sin(X[0])*m.Sin(X[1])*m.Exp(
-			m.Abs(100-m.Sqrt(m.Pow(X[0], 2)+m.Pow(X[1], 2))/m.Pi)))+1, 0.1)
+			m.Abs(100-m.Sqrt(m.Pow(X[0], 2)+m.Pow(X[1], 2))/m.Pi)))+1, 0.1), nil
 }
 
 // Mutate a Vector by applying by resampling each element from a normal

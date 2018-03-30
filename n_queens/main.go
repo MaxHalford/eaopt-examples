@@ -37,7 +37,7 @@ func absInt(n int) int {
 // Evaluate a slice of Positions by counting the number of diagonal collisions.
 // Queens are on the same diagonal if there row distance is equal to their
 // column distance.
-func (P Positions) Evaluate() float64 {
+func (P Positions) Evaluate() (float64, error) {
 	var collisions float64
 	for i := 0; i < len(P); i++ {
 		for j := i + 1; j < len(P); j++ {
@@ -46,7 +46,7 @@ func (P Positions) Evaluate() float64 {
 			}
 		}
 	}
-	return collisions
+	return collisions, nil
 }
 
 // Mutate a slice of Positions by permuting it's values.

@@ -13,12 +13,12 @@ type Vector []float64
 
 // Evaluate a Vector with the Drop-Wave function which takes two variables as
 // input and reaches a minimum of -1 in X = (0, 0).
-func (X Vector) Evaluate() float64 {
+func (X Vector) Evaluate() (float64, error) {
 	var (
 		numerator   = 1 + m.Cos(12*m.Sqrt(m.Pow(X[0], 2)+m.Pow(X[1], 2)))
 		denominator = 0.5*(m.Pow(X[0], 2)+m.Pow(X[1], 2)) + 2
 	)
-	return -numerator / denominator
+	return -numerator / denominator, nil
 }
 
 // Mutate a Vector by applying by resampling each element from a normal
