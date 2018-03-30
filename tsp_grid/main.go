@@ -73,7 +73,7 @@ func (p Path) Copy() gago.Slice {
 }
 
 // Evaluate a Path by summing the consecutive Euclidean distances.
-func (p Path) Evaluate() (distance float64) {
+func (p Path) Evaluate() (distance float64, err error) {
 	for i := 0; i < len(p)-1; i++ {
 		distance += math.Sqrt(math.Pow(p[i+1].x-p[i].x, 2) + math.Pow(p[i+1].y-p[i].y, 2))
 	}

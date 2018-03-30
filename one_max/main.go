@@ -16,12 +16,12 @@ const N = 20
 type Digits []int
 
 // Evaluate a slice of Digits by summing the number of 1s.
-func (X Digits) Evaluate() float64 {
+func (X Digits) Evaluate() (float64, error) {
 	var sum int
 	for _, d := range X {
 		sum += d
 	}
-	return N - float64(sum) // We want to minimize the fitness, hence the reversing
+	return N - float64(sum), nil // We want to minimize the fitness, hence the reversing
 }
 
 // Mutate a slice of Digits by permuting it's values.

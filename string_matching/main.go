@@ -19,7 +19,7 @@ type Strings []string
 
 // Evaluate a Strings slice by counting the number of mismatches between itself
 // and the target string.
-func (X Strings) Evaluate() (mismatches float64) {
+func (X Strings) Evaluate() (mismatches float64, err error) {
 	for i, s := range X {
 		if s != target[i] {
 			mismatches++
