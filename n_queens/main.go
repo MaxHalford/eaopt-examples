@@ -6,11 +6,11 @@ import (
 	"math/rand"
 	"strings"
 
-	"github.com/MaxHalford/gago"
+	"github.com/MaxHalford/eaopt"
 )
 
-// N_QUEENS is the size of each genome.
-const N_QUEENS = 15
+// NQUEENS is the size of each genome.
+const NQUEENS = 15
 
 // Positions is a slice of ints.
 type Positions []int
@@ -21,7 +21,7 @@ func (P Positions) String() string {
 	for _, p := range P {
 		board.WriteString(strings.Repeat(" .", p))
 		board.WriteString(" \u2655")
-		board.WriteString(strings.Repeat(" .", N_QUEENS-p-1))
+		board.WriteString(strings.Repeat(" .", NQUEENS-p-1))
 		board.WriteString("\n")
 	}
 	return board.String()
@@ -51,40 +51,50 @@ func (P Positions) Evaluate() (float64, error) {
 
 // Mutate a slice of Positions by permuting it's values.
 func (P Positions) Mutate(rng *rand.Rand) {
-	gago.MutPermuteInt(P, 3, rng)
+	eaopt.MutPermuteInt(P, 3, rng)
 }
 
 // Crossover a slice of Positions with another by applying partially mapped
 // crossover.
-func (P Positions) Crossover(Y gago.Genome, rng *rand.Rand) {
-	gago.CrossPMXInt(P, Y.(Positions), rng)
+func (P Positions) Crossover(Y eaopt.Genome, rng *rand.Rand) {
+	eaopt.CrossPMXInt(P, Y.(Positions), rng)
 }
 
 // Clone a slice of Positions.
-func (P Positions) Clone() gago.Genome {
+func (P Positions) Clone() eaopt.Genome {
 	var PP = make(Positions, len(P))
 	copy(PP, P)
 	return PP
 }
 
 // MakeBoard creates a random slices of positions by generating random number
-// permutations in [0, N_QUEENS).
-func MakeBoard(rng *rand.Rand) gago.Genome {
-	var positions = make(Positions, N_QUEENS)
-	for i, position := range rng.Perm(N_QUEENS) {
+// permutations in [0, NQUEENS).
+func MakeBoard(rng *rand.Rand) eaopt.Genome {
+	var positions = make(Positions, NQUEENS)
+	for i, position := range rng.Perm(NQUEENS) {
 		positions[i] = position
 	}
-	return gago.Genome(positions)
+	return eaopt.Genome(positions)
 }
 
 func main() {
-	var ga = gago.Generational(MakeBoard)
-	ga.Initialize()
-
-	for ga.HallOfFame[0].Fitness > 0 {
-		ga.Evolve()
+	var conf = eaopt.NewDefaultGAConfig()
+	conf.NGenerations = 10e9 // We should stop earlier than this
+	var ga, err = conf.NewGA()
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 
+	// Add a callback to stop when the problem is solved
+	ga.EarlyStop = func(ga *eaopt.GA) bool {
+		return ga.HallOfFame[0].Fitness == 0
+	}
+
+	// Run the GA
+	ga.Minimize(MakeBoard)
+
+	// Display result
 	fmt.Println(ga.HallOfFame[0].Genome)
 	fmt.Printf("Optimal solution obtained after %d generations in %s\n", ga.Generations, ga.Age)
 }

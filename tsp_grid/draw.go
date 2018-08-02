@@ -9,7 +9,7 @@ import (
 	"github.com/fogleman/gg"
 )
 
-func drawPath(p Path, generation int, distance float64) *image.Paletted {
+func drawPath(p Path, generation uint, distance float64) *image.Paletted {
 	const S = 350
 	const P = 10
 	var dc = gg.NewContext(S, S)

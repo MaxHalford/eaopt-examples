@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/MaxHalford/gago"
+	"github.com/MaxHalford/eaopt"
 )
 
 // N is the size of each genome.
@@ -26,38 +26,49 @@ func (X Digits) Evaluate() (float64, error) {
 
 // Mutate a slice of Digits by permuting it's values.
 func (X Digits) Mutate(rng *rand.Rand) {
-	gago.MutPermuteInt(X, 3, rng)
+	eaopt.MutPermuteInt(X, 3, rng)
 }
 
 // Crossover a slice of Digits with another by applying 2-point crossover.
-func (X Digits) Crossover(Y gago.Genome, rng *rand.Rand) {
-	gago.CrossGNXInt(X, Y.(Digits), 2, rng)
+func (X Digits) Crossover(Y eaopt.Genome, rng *rand.Rand) {
+	eaopt.CrossGNXInt(X, Y.(Digits), 2, rng)
 }
 
 // Clone a slice of Digits.
-func (X Digits) Clone() gago.Genome {
+func (X Digits) Clone() eaopt.Genome {
 	var XX = make(Digits, len(X))
 	copy(XX, X)
 	return XX
 }
 
 // MakeDigits creates a random slice of Digits by randomly picking 1s and 0s.
-func MakeDigits(rng *rand.Rand) gago.Genome {
+func MakeDigits(rng *rand.Rand) eaopt.Genome {
 	var digits = make(Digits, N)
 	for i := range digits {
 		if rng.Float64() < 0.5 {
 			digits[i] = 1
 		}
 	}
-	return gago.Genome(digits)
+	return eaopt.Genome(digits)
 }
 
 func main() {
-	var ga = gago.Generational(MakeDigits)
-	ga.Initialize()
-
-	for i := 1; i < 10; i++ {
-		ga.Evolve()
-		fmt.Printf("Best fitness -> %f\n", ga.HallOfFame[0].Fitness)
+	var ga, err = eaopt.NewDefaultGAConfig().NewGA()
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
+
+	// Add a custom print function to track progress
+	ga.Callback = func(ga *eaopt.GA) {
+		fmt.Printf("%d) Best fitness -> %f\n", ga.Generations, ga.HallOfFame[0].Fitness)
+	}
+
+	// Add a callback to stop when the problem is solved
+	ga.EarlyStop = func(ga *eaopt.GA) bool {
+		return ga.HallOfFame[0].Fitness == 0
+	}
+
+	// Run the GA
+	ga.Minimize(MakeDigits)
 }

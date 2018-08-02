@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"os"
 
-	"github.com/MaxHalford/gago"
+	"github.com/MaxHalford/eaopt"
 )
 
 const (
@@ -46,27 +46,27 @@ func (p Path) Swap(i, j int) {
 }
 
 // Slice method from Slice
-func (p Path) Slice(a, b int) gago.Slice {
+func (p Path) Slice(a, b int) eaopt.Slice {
 	return p[a:b]
 }
 
 // Split method from Slice
-func (p Path) Split(k int) (gago.Slice, gago.Slice) {
+func (p Path) Split(k int) (eaopt.Slice, eaopt.Slice) {
 	return p[:k], p[k:]
 }
 
 // Append method from Slice
-func (p Path) Append(q gago.Slice) gago.Slice {
+func (p Path) Append(q eaopt.Slice) eaopt.Slice {
 	return append(p, q.(Path)...)
 }
 
 // Replace method from Slice
-func (p Path) Replace(q gago.Slice) {
+func (p Path) Replace(q eaopt.Slice) {
 	copy(p, q.(Path))
 }
 
 // Copy method from Slice
-func (p Path) Copy() gago.Slice {
+func (p Path) Copy() eaopt.Slice {
 	var clone = make(Path, len(p))
 	copy(clone, p)
 	return clone
@@ -83,27 +83,27 @@ func (p Path) Evaluate() (distance float64, err error) {
 // Mutate a Path by applying by permutation mutation and/or splice mutation.
 func (p Path) Mutate(rng *rand.Rand) {
 	if rng.Float64() < 0.35 {
-		gago.MutPermute(p, 3, rng)
+		eaopt.MutPermute(p, 3, rng)
 	}
 	if rng.Float64() < 0.45 {
-		gago.MutSplice(p, rng)
+		eaopt.MutSplice(p, rng)
 	}
 }
 
 // Crossover a Path with another Path by using Partially Mixed Crossover (PMX).
-func (p Path) Crossover(q gago.Genome, rng *rand.Rand) {
-	gago.CrossPMX(p, q.(Path), rng)
+func (p Path) Crossover(q eaopt.Genome, rng *rand.Rand) {
+	eaopt.CrossPMX(p, q.(Path), rng)
 }
 
 // Clone a Path.
-func (p Path) Clone() gago.Genome {
+func (p Path) Clone() eaopt.Genome {
 	var clone = make(Path, len(p))
 	copy(clone, p)
 	return clone
 }
 
 // MakePath creates a slice of Points along a grid and then shuffles the slice.
-func MakePath(rng *rand.Rand) gago.Genome {
+func MakePath(rng *rand.Rand) eaopt.Genome {
 	var (
 		path = make(Path, GRIDSIZE*GRIDSIZE)
 		p    = 0
@@ -124,23 +124,31 @@ func MakePath(rng *rand.Rand) gago.Genome {
 
 func main() {
 	var (
-		ga     = gago.Generational(MakePath)
-		outGif = &gif.GIF{}
+		ga, err = eaopt.NewDefaultGAConfig().NewGA()
+		outGif  = &gif.GIF{}
 	)
-	ga.Initialize()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-	for i := 0; i < GENERATIONS; i++ {
-		ga.Evolve()
+	// Add a custom print function to track progress
+	ga.Callback = func(ga *eaopt.GA) {
 		// Store the drawing for the current best path
-		var img = drawPath(ga.HallOfFame[0].Genome.(Path), i, ga.HallOfFame[0].Fitness)
+		var img = drawPath(ga.HallOfFame[0].Genome.(Path), ga.Generations, ga.HallOfFame[0].Fitness)
 		outGif.Image = append(outGif.Image, img)
 		outGif.Delay = append(outGif.Delay, 0)
 	}
+
+	// Run the GA
+	ga.Minimize(MakePath)
+
 	// Print the best obtained solution vs. the optimal solution
 	var optimal = float64((GRIDSIZE + 1) * (GRIDSIZE - 1))
 	fmt.Printf("Obtained %f\n", ga.HallOfFame[0].Fitness)
 	fmt.Printf("Optimal is %d\n", int(optimal))
 	fmt.Printf("Off by %f percent\n", 100*(ga.HallOfFame[0].Fitness-optimal)/optimal)
+
 	// Save to out.gif
 	var outFile, _ = os.OpenFile("progress.gif", os.O_WRONLY|os.O_CREATE, 0600)
 	defer outFile.Close()

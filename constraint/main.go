@@ -8,7 +8,7 @@ import (
 	"math/rand"
 	"os"
 
-	"github.com/MaxHalford/gago"
+	"github.com/MaxHalford/eaopt"
 )
 
 // The name of the file to which the GA progress is appended to
@@ -29,16 +29,16 @@ func (X Vector) Evaluate() (y float64, err error) {
 // Mutate a Vector by applying by resampling each element from a normal
 // distribution with probability 0.8.
 func (X Vector) Mutate(rng *rand.Rand) {
-	gago.MutNormalFloat64(X, 0.8, rng)
+	eaopt.MutNormalFloat64(X, 0.8, rng)
 }
 
 // Crossover a Vector with another Vector by applying uniform crossover.
-func (X Vector) Crossover(Y gago.Genome, rng *rand.Rand) {
-	gago.CrossUniformFloat64(X, Y.(Vector), rng)
+func (X Vector) Crossover(Y eaopt.Genome, rng *rand.Rand) {
+	eaopt.CrossUniformFloat64(X, Y.(Vector), rng)
 }
 
 // Clone a Vector.
-func (X Vector) Clone() gago.Genome {
+func (X Vector) Clone() eaopt.Genome {
 	var XX = make(Vector, len(X))
 	copy(XX, X)
 	return XX
@@ -46,13 +46,16 @@ func (X Vector) Clone() gago.Genome {
 
 // MakeVector returns a random vector by generating 5 values uniformally
 // distributed between -10 and 10.
-func MakeVector(rng *rand.Rand) gago.Genome {
-	return Vector(gago.InitUnifFloat64(2, -20, 20, rng))
+func MakeVector(rng *rand.Rand) eaopt.Genome {
+	return Vector(eaopt.InitUnifFloat64(2, -20, 20, rng))
 }
 
 func main() {
-	var ga = gago.Generational(MakeVector)
-	ga.Initialize()
+	var ga, err = eaopt.NewDefaultGAConfig().NewGA()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	// Empty the progress file
 	f, _ := os.Create(progressFileName)
@@ -69,13 +72,14 @@ func main() {
 	var bytes, _ = json.Marshal(ga)
 	f.WriteString(string(bytes) + "\n")
 
-	// Evolve the GA
-	fmt.Printf("Best fitness at generation 0: %f\n", ga.HallOfFame[0].Fitness)
-	for i := 1; i < 100; i++ {
-		ga.Evolve()
-		fmt.Printf("Best fitness at generation %d: %f\n", i, ga.HallOfFame[0].Fitness)
+	// Add a custom print function to track progress
+	ga.Callback = func(ga *eaopt.GA) {
+		fmt.Printf("Best fitness at generation %d: %f\n", ga.Generations, ga.HallOfFame[0].Fitness)
 		// Append the current GA status to the progress file
 		var bytes, _ = json.Marshal(ga)
 		f.WriteString(string(bytes) + "\n")
 	}
+
+	// Run the GA
+	ga.Minimize(MakeVector)
 }
